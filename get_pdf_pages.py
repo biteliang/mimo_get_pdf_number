@@ -1,10 +1,10 @@
 import pdfplumber
+from pdfminer.pdfparser import PDFSyntaxError
 import os
 import gc
 import time
 
 # author:Peter
-# PyPDF2速度极慢,本次使用了pdfplumber
 '''
 先获取文件夹下所有的文件名
 然后进行判定
@@ -30,26 +30,28 @@ def get_file_name(path):
     return fileList
 
 
-# 使用PyPDF2库,获取pdf文档页数
-def PyPDF2_get_pdf_pages(pdf_path):
+# 使用pdfplumber,获取pdf文档页数
+def get_pdf_page(pdf_path):
     try:
-        reader = PyPDF2.PdfFileReader(pdf_path)
-        page_num = reader.getNumPages()
-    except:
-        print(pdf_path + "该文件出现异常，可能是权限问题")
-    return page_num
+        f = pdfplumber.open(pdf_path)
+        page = len(f.pages)
+    except PDFSyntaxError:
+        page = 0
+    return page
 
 
 if __name__ == '__main__':
-    start_time = time.time()
-    path = input("please input path:\n")
-    for i in get_file_name(path):
-        if "NY.pdf" in i:
-            oldname = i
-            # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
-            newname = i.replace(".pdf", "") + "=" + str(get_pdf_page(i)) + "P.pdf"
-            # 回收内存,不然会命名失败
-            gc.collect()
-            os.rename(oldname, newname)
-    end_time = time.time()
-    input(f"the running time is : {end_time - start_time} s\nplease exit......")
+    while True:
+        start_time = time.time()
+        path = input("please input path:\n请输入路径:\n")
+        for i in get_file_name(path):
+            if "NY.pdf" in i:
+                oldname = i
+                # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
+                newname = i.replace(".pdf", "") + "=" + str(get_pdf_page(i)) + "P.pdf"
+                # 回收内存,不然会命名失败
+                gc.collect()
+                os.rename(oldname, newname)
+                # print(newname)
+        end_time = time.time()
+        print(f"the running time is : {end_time - start_time} s\n本次目录已执行完毕,如需继续请直接输入路径\n")
