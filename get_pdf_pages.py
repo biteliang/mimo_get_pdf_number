@@ -2,35 +2,41 @@ import gc
 import os
 import time
 import tqdm
-
+import datetime
 
 import pdfplumber
 from pdfminer.pdfparser import PDFSyntaxError
 
 # author:Peter
 '''
-先获取文件夹下所有的文件名
-然后进行判定
-    如果文件名后几位 == NY.PDF
-    就执行命名
-其他全都放在一个列表里 fileList
 
-使用pdfplumber,分别把fileList里的放进去,然后进行改名
+先获取N:/7900文件夹下所有的目录
+筛选今天日期和昨天日期和前天日期,放到一个列表里
+把这列表的文件进行判定,是NY.pdf则执行命名
 
 '''
 
 
 # 获取文件夹中的文件名
-def get_file_name(path):
-    fileList = []
+def get_file_name(file_path):
+    file_list = []
     # root 表示当前正在访问的文件夹路径
     # dirs 是list,表示该文件夹中所有的目录的名字（不包括子目录）
     # files 是list,表示内容是该文件夹中所有的文件（不包括子目录）
-    for root, dirs, files in os.walk(path):
+    for root, dirs, files in os.walk(file_path):
         for name in files:
-            fname = os.path.join(root, name)
-            fileList.append(fname)
-    return fileList
+            f_name = os.path.join(root, name)
+            file_list.append(f_name)
+    return file_list
+
+
+def get_dir_name(dir_path):
+    dir_list = []
+    dbtype_list = os.listdir(dir_path)
+    for dbtype in dbtype_list:
+        if os.path.isdir(os.path.join(dir_path, dbtype)):
+            dir_list.append(dbtype)
+    return dir_list
 
 
 # 使用pdfplumber,获取pdf文档页数
@@ -43,18 +49,61 @@ def get_pdf_page(pdf_path):
     return page
 
 
+def get_today():
+    today = datetime.date.today()
+    formatted_today = today.strftime("%m%d")
+    return formatted_today
+
+
 if __name__ == '__main__':
-    while True:
-        start_time = time.time()
-        path = input("please input path:\n请输入路径:\n")
-        for i in tqdm.tqdm(get_file_name(path)):
-            if "NY.pdf" in i:
-                oldname = i
+    start_time = time.time()
+
+    # path = input("please input path:\n请输入路径:\n")
+    path = "N:\\indigo-7900"
+
+    # 获取路径下所有文件夹名
+    d_list = get_dir_name(path)
+
+    # 创建空列表,存放带有近三天日期的文件夹
+    nearly_three_day_dirs = []
+    for i in d_list:
+        if get_today() in i:
+            nearly_three_day_dirs.append(i)
+        if str(int(get_today()) - 1) in i:
+            nearly_three_day_dirs.append(i)
+        if str(int(get_today()) - 2) in i:
+            nearly_three_day_dirs.append(i)
+
+    nearly_three_day_dirs_list = []
+    # 拼接路径,合并nearly_three_day_dirs 然后把这作为一个路径
+    for j in tqdm.tqdm(nearly_three_day_dirs):
+        nearly_three_day_dirs = "N:\\indigo-7900\\" + j
+        # 获取这个路径下的所有文件名
+        for k in get_file_name(nearly_three_day_dirs):
+            # 对文件名进行一个判断
+            if "NY.pdf" in k:
+                old_name = k
                 # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
-                newname = i.replace(".pdf", "") + "=" + str(get_pdf_page(i)) + "P.pdf"
-                # 回收内存,不然会命名失败
+                new_name = k.replace(".pdf", "") + "=" + str(get_pdf_page(k)) + "P.pdf"
+                # 回收内存
                 gc.collect()
-                os.rename(oldname, newname)
-                # print(oldname + "  ======>  " + newname)
-        end_time = time.time()
-        print(f"the running time is : {end_time - start_time} s\n本次重命名已执行完毕,如需继续请直接输入路径\n")
+                # 进行改名
+                os.rename(old_name, new_name)
+                nearly_three_day_dirs_list.append(new_name)
+    end_time = time.time()
+    # print(nearly_three_day_dirs_list)
+    # print(len(nearly_three_day_dirs_list))
+    print(f"the running time is : {end_time - start_time} s.\n本次修改文件数量为：{len(nearly_three_day_dirs_list)}")
+    input("")
+
+# for i in tqdm.tqdm(get_file_name(path)):
+#     if "NY.pdf" in i:
+#         old_name = i
+#         # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
+#         newname = i.replace(".pdf", "") + "=" + str(get_pdf_page(i)) + "P.pdf"
+#         # 回收内存,不然会命名失败
+#         gc.collect()
+#         os.rename(old_name, newname)
+#         # print(old_name + "  ======>  " + newname)
+# end_time = time.time()
+# print(f"the running time is : {end_time - start_time} s.\n本次重命名已执行完毕,如需继续请直接输入路径\n")
