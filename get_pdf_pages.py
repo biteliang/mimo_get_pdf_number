@@ -30,6 +30,7 @@ def get_file_name(file_path):
     return file_list
 
 
+# 获取文件夹中的文件夹名
 def get_dir_name(dir_path):
     dir_list = []
     dbtype_list = os.listdir(dir_path)
@@ -49,6 +50,7 @@ def get_pdf_page(pdf_path):
     return page
 
 
+# 获取今天的日期并格式化,例：1201  代表12月1日
 def get_today():
     today = datetime.date.today()
     formatted_today = today.strftime("%m%d")
