@@ -1,8 +1,11 @@
+import gc
+import os
+import time
+import tqdm
+
+
 import pdfplumber
 from pdfminer.pdfparser import PDFSyntaxError
-import os
-import gc
-import time
 
 # author:Peter
 '''
@@ -44,7 +47,7 @@ if __name__ == '__main__':
     while True:
         start_time = time.time()
         path = input("please input path:\n请输入路径:\n")
-        for i in get_file_name(path):
+        for i in tqdm.tqdm(get_file_name(path)):
             if "NY.pdf" in i:
                 oldname = i
                 # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
@@ -52,6 +55,6 @@ if __name__ == '__main__':
                 # 回收内存,不然会命名失败
                 gc.collect()
                 os.rename(oldname, newname)
-                # print(newname)
+                # print(oldname + "  ======>  " + newname)
         end_time = time.time()
-        print(f"the running time is : {end_time - start_time} s\n本次目录已执行完毕,如需继续请直接输入路径\n")
+        print(f"the running time is : {end_time - start_time} s\n本次重命名已执行完毕,如需继续请直接输入路径\n")
