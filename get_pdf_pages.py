@@ -91,19 +91,6 @@ if __name__ == '__main__':
                 os.rename(old_name, new_name)
                 nearly_three_day_dirs_list.append(new_name)
     end_time = time.time()
-    # print(nearly_three_day_dirs_list)
-    # print(len(nearly_three_day_dirs_list))
+    # 结束计时并输出运行时间和修改数量
     print(f"the running time is : {end_time - start_time} s.\n本次修改文件数量为：{len(nearly_three_day_dirs_list)}")
     input("")
-
-# for i in tqdm.tqdm(get_file_name(path)):
-#     if "NY.pdf" in i:
-#         old_name = i
-#         # 新命名 = 原命名去".pdf"后缀,然后加上页数再补上后缀
-#         newname = i.replace(".pdf", "") + "=" + str(get_pdf_page(i)) + "P.pdf"
-#         # 回收内存,不然会命名失败
-#         gc.collect()
-#         os.rename(old_name, newname)
-#         # print(old_name + "  ======>  " + newname)
-# end_time = time.time()
-# print(f"the running time is : {end_time - start_time} s.\n本次重命名已执行完毕,如需继续请直接输入路径\n")
