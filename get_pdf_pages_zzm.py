@@ -31,7 +31,7 @@ def get_file_name(file_path):
 
 
 # 获取文件夹中的文件夹名
-def get_dir_name(dir_path):
+def get_dirs_name(dir_path):
     dir_list = []
     dbtype_list = os.listdir(dir_path)
     for dbtype in dbtype_list:
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     path = "F:\\printfile\\indigo-7900"
 
     # 获取路径下所有文件夹名
-    d_list = get_dir_name(path)
+    d_list = get_dirs_name(path)
 
     # 创建空列表,存放带有近三天日期的文件夹
     nearly_three_day_dirs = []
