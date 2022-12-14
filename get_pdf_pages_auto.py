@@ -31,7 +31,7 @@ def get_file_name(file_path):
 
 
 # 获取文件夹中的文件夹名
-def get_dirs_name(dir_path):
+def get_dir_name(dir_path):
     dir_list = []
     dbtype_list = os.listdir(dir_path)
     for dbtype in dbtype_list:
@@ -60,11 +60,11 @@ def get_today():
 if __name__ == '__main__':
     start_time = time.time()
 
-    path = input("please input path:\n请输入路径:\n")
-    # path = "N:\\indigo-7900"
+    # path = input("please input path:\n请输入路径:\n")
+    path = "N:\\indigo-7900"
 
     # 获取路径下所有文件夹名
-    d_list = get_dirs_name(path)
+    d_list = get_dir_name(path)
 
     # 创建空列表,存放带有近三天日期的文件夹
     nearly_three_day_dirs = []
@@ -92,7 +92,6 @@ if __name__ == '__main__':
                 # 进行改名
                 os.rename(old_name, new_name)
                 nearly_three_day_dirs_list.append(new_name)
-                # print(new_name)
     end_time = time.time()
     # 结束计时并输出运行时间和修改数量
     print(f"the running time is : {end_time - start_time} s.\n本次修改文件数量为：{len(nearly_three_day_dirs_list)}")
