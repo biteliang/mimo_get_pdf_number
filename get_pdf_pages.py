@@ -37,6 +37,11 @@ def get_dirs_name(dir_path):
     for dbtype in dbtype_list:
         if os.path.isdir(os.path.join(dir_path, dbtype)):
             dir_list.append(dbtype)
+            # dir_list.append(dbtype)  或许可以把路径也添加上 dir_list.append(os.path.join(dir_path, dbtype))
+            # 这样lir_list就直接是一个路径的列表了
+            # 这样应该就不需要 以下这段代码了
+            # for j in tqdm.tqdm(nearly_three_day_dirs):
+            #     nearly_three_day_dirs = "N:\\indigo-7900\\" + j
     return dir_list
 
 
@@ -63,10 +68,12 @@ if __name__ == '__main__':
     path = input("please input path:\n请输入路径:\n")
     # path = "N:\\indigo-7900"
 
-    # 获取路径下所有文件夹名
+    # 获取仅当前路径下所有文件夹名
     d_list = get_dirs_name(path)
 
+    # 筛选出近三天日期的文件夹（以文件名的形式,看看需不需要修改成以创建日期的形式）
     # 创建空列表,存放带有近三天日期的文件夹
+    # 这需要重新打包一个函数
     nearly_three_day_dirs = []
     for i in d_list:
         if get_today() in i:
@@ -81,6 +88,7 @@ if __name__ == '__main__':
     for j in tqdm.tqdm(nearly_three_day_dirs):
         nearly_three_day_dirs = "N:\\indigo-7900\\" + j
         # 获取这个路径下的所有文件名
+        # 设置函数,增加一个调试,如果=1则调试,如果=2则启动命名
         for k in get_file_name(nearly_three_day_dirs):
             # 对文件名进行一个判断
             if "NY.pdf" in k:
